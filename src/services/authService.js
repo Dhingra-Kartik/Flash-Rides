@@ -48,8 +48,15 @@ const login = async ({email, password}) => {   //same here since you have de-str
         }
     );
 
+    const userInfo = {
+        userId: user._id,
+        userName: user.name,
+        userEmail: user.email,
+        userRole: user.role,
+    }
+
     return {
-        user,
+        userInfo,
         token
     };
 };
