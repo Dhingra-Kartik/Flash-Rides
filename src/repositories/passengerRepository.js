@@ -1,4 +1,5 @@
 const Booking = require("../models/bookings");
+const User = require('../models/userModel');
 
 const createBooking = async(bookingData) =>{
 
@@ -8,5 +9,12 @@ const createBooking = async(bookingData) =>{
 
 }
 
+const updateLocation = async(driverId, location) =>{
+    const updatedLocation = await User.findByIdAndUpdate(driverId, {location}, {
+        new: true
+    })
+}
+
 module.exports = {
-    createBooking};
+    createBooking,
+    updateLocation};

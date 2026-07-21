@@ -1,16 +1,17 @@
 const express = require('express');
 const authMiddleware = require('../../middlewares/authMiddleware');
 const authorizeRoles = require('../../middlewares/roleMiddleware');
+const {updateLocation} = require('../../controllers/driverController');
 
 const driverRouter = express.Router();
 
 driverRouter.get('/bookings', 
     authMiddleware,      //is the JWT valid ?? yes then check
-    authorizeRoles('DRIVER'), getDriverBookings);   //hey are you verified DRIVER 
+    authorizeRoles('driver'), getDriverBookings);   //hey are you verified DRIVER 
 
 driverRouter.post('/location',
     authMiddleware,
-    authorizeRoles('DRIVER'), 
+    authorizeRoles('driver'), 
     updateLocation);
 
 module.exports = driverRouter;
