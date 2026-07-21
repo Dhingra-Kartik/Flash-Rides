@@ -7,7 +7,7 @@ const createBooking = async (req, res) => {
         const {source, destination } = req.body;
         //create the booking or booking object
         const booking = await bookingService.createBooking({
-            passengerId: req.user._id, 
+            passengerId: req.user.id, 
             source, 
             destination});
         //find nearby drivers from REDISDB
