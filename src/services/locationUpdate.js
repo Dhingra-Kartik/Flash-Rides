@@ -20,6 +20,38 @@ class locationService {
         
         }
     }
+
+    async findNearbyDrivers(lon, lat, rad){
+
+        const nearbyDrivers = await redisClient.sendCommand([
+            'GEORADIUS',
+            'drivers',
+            lon.toString(),
+            lat.toString(),
+            rad.toString(),
+            'km',
+            'WITHCOORD'
+        ]);
+
+        return nearbyDrivers;
+    }
+
+    async setDriverSocket(driverId, socketId){
+        await redisClient.set(`driver:${driverId}`, socketId);
+
+    };
+    async getDriverSocket(driverId){
+        return await redisClient.get(`driver${driverId}`);
+    };
+    async deleteDriverSocket(driverId){
+        await redisClient.del(`driver${driverId}`);
+
+    };
+    async deleteDriverSocket(socketId){
+        deleteDriverSocket(redisClient.get(socketId));
+
+    };
+
 }
 
 module.exports = new locationService();
