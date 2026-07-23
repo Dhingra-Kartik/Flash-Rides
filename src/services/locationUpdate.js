@@ -1,7 +1,7 @@
 const {redisClient } = require('../utils/redisClient');
 
 class locationService {
-    async addDriverLOcation(driverId, longitude, latitude){
+    async addDriverLocation(driverId, longitude, latitude){
         try {
             const result = await redisClient.sendCommand([
                 'GEOADD',
@@ -17,6 +17,7 @@ class locationService {
         console.log(`Driver ${driverId} location added`);
         } catch (error) {
             console.log("Cannot add driver location", error);
+            throw error;
         
         }
     }
@@ -35,22 +36,6 @@ class locationService {
 
         return nearbyDrivers;
     }
-
-    async setDriverSocket(driverId, socketId){
-        await redisClient.set(`driver:${driverId}`, socketId);
-
-    };
-    async getDriverSocket(driverId){
-        return await redisClient.get(`driver${driverId}`);
-    };
-    async deleteDriverSocket(driverId){
-        await redisClient.del(`driver${driverId}`);
-
-    };
-    async deleteDriverSocket(socketId){
-        deleteDriverSocket(redisClient.get(socketId));
-
-    };
 
 }
 

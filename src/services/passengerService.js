@@ -28,9 +28,9 @@ const findNearbyDrivers = async(location, radius=5)=>{
     const lon =parseFloat(location.longitude);
     const lat =parseFloat(location.latitude);
 
-    const radius = parseFloat(radius);
+    const rad = parseFloat(radius);
 
-    const nearbyDrivers = await locationService.findNearbyDrivers(lon, lat, radius);
+    const nearbyDrivers = await locationService.findNearbyDrivers(lon, lat, rad);
     return nearbyDrivers;
 
 }
