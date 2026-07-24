@@ -1,9 +1,17 @@
 const express = require('express');
 const authMiddleware = require('../../middlewares/authMiddleware');
+const authorizeRoles = require('../../middlewares/roleMiddleware');
+const {
+    updateLocation,
+    confirmBooking
+} = require('../../controllers/driverController');
 
 const bookingsRouter = express.Router();
 
-bookingsRouter.post('/new', authMiddleware, createBooking);
-bookingsRouter.post('/confirm', authMiddleware, confirmBooking);
+// bookingsRouter.post('/new', authMiddleware, createBooking);
+bookingsRouter.post('/confirm', 
+    authMiddleware,
+    authorizeRoles('driver'),  
+    confirmBooking);
 
 module.exports = bookingsRouter;

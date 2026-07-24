@@ -24,8 +24,69 @@ const updateLocation = async(req, res) => {
     }
 }
 
+const confirmBooking = async (req, res) => {
+
+    try {
+
+        const {
+            bookingId
+        } = req.body;
+
+
+        if (!bookingId) {
+
+            return res.status(400).json({
+
+                success: false,
+
+                message:
+                    'Booking ID is required'
+
+            });
+
+        }
+
+
+        const booking =
+            await driverService.confirmBooking(
+
+                bookingId,
+
+                req.user.id
+
+            );
+
+
+        return res.status(200).json({
+
+            success: true,
+
+            message:
+                'Booking confirmed successfully',
+
+            data: booking
+
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+
+            message: error.message
+
+        });
+
+    }
+
+};
+
 
 
 module.exports = {
-    updateLocation
+    updateLocation,
+    confirmBooking
 }
