@@ -23,6 +23,24 @@ const updateLocation = async(driverId, {latitude, longitude}) => {
     }
 }
 
+const confirmBooking = async (bookingId, driverId) => {
+
+    const booking =
+        await passengerRepository.confirmBooking(
+            bookingId,
+            driverId
+        );
+
+    if (!booking) {
+
+        throw new Error(
+            'Booking is no longer available'
+        );
+    }
+
+    return booking;
+};
+
 // Socket connection mapping
 const setDriverSocket = async (driverId, socketId) => {
 
@@ -62,6 +80,7 @@ const removeDriverSocket = async (driverId, socketId) => {
 
 module.exports ={
     updateLocation,
+    confirmBooking,
     setDriverSocket,
     getDriverSocket,
     removeDriverSocket

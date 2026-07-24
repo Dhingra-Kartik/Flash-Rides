@@ -2,8 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const v1Router = require('./routes/v1Routes');
+const cors = require('cors');
 const connectDatabase = require('./config/dbConfig');
 const app = express();
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.text());

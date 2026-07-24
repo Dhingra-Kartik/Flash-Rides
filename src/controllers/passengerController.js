@@ -16,6 +16,13 @@ const createBooking = async (req, res) => {
         //find nearby drivers from REDISDB
 
         const nearbyDrivers = await bookingService.findNearbyDrivers(source);
+
+        console.log(
+    'RAW NEARBY DRIVERS:',
+    JSON.stringify(nearbyDrivers, null, 2)
+    );
+
+
         const driverIds =
             nearbyDrivers.map(
                 driver => driver[0]
@@ -26,12 +33,21 @@ const createBooking = async (req, res) => {
             'Nearby drivers:',
             driverIds
         );
+
+        console.log('SENDING NOTIFICATION REQUEST:', {
+rideId: booking._id,
+driverIds
+});
         //Notify thenearby drivers, accept or reject.
         if (driverIds.length > 0) {
+            console.log('SENDING NOTIFICATION REQUEST:', {
+    rideId: booking._id,
+    driverIds
+});
 
             await axios.post(`${process.env.SOCKET_SERVICE}`,
 
-                {rideId: booking._id,
+                {rideId: booking._id.toString(),
 
                 rideInfo: {
                     source, 

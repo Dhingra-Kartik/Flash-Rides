@@ -15,6 +15,26 @@ const updateLocation = async(driverId, location) =>{
     })
 }
 
+const confirmBooking = async (bookingId, driverId) => {
+
+    const booking = await Booking.findOneAndUpdate(
+        {
+            _id: bookingId,
+            status: 'pending'
+        },
+        {
+            driver: driverId,
+            status: 'confirmed'
+        },
+        {
+            new: true
+        }
+    );
+
+    return booking;
+};
+
 module.exports = {
     createBooking,
-    updateLocation};
+    updateLocation,
+    confirmBooking};
