@@ -9,6 +9,13 @@ const bookingSchema = new mongoose.Schema({
     driver: 
     {type: mongoose.Schema.Types.ObjectId, 
         ref: 'Ride-Matching-Users', default: null},  //at start while making creating booking request, our driver would be NULL
+    
+        notifiedDrivers: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Ride-Matching-Users'
+    }
+],
 
     source: {   //a booking must have source/pickup
         latitude: {

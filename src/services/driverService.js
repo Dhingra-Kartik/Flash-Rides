@@ -2,6 +2,7 @@
 const {redisClient} = require('../utils/redisClient');
 const locationService = require('./locationUpdate'); 
 const passengerRepository = require('../repositories/passengerRepository');
+const axios = require('axios');
 
 const updateLocation = async(driverId, {latitude, longitude}) => {
 
@@ -23,7 +24,10 @@ const updateLocation = async(driverId, {latitude, longitude}) => {
     }
 }
 
-const confirmBooking = async (bookingId, driverId) => {
+const confirmBooking = async (
+    bookingId,
+    driverId
+) => {
 
     const booking =
         await passengerRepository.confirmBooking(
@@ -32,12 +36,34 @@ const confirmBooking = async (bookingId, driverId) => {
         );
 
     if (!booking) {
-
         throw new Error(
             'Booking is no longer available'
         );
     }
 
+    const otherDriverIds =
+    booking.notifiedDrivers
+        .filter(
+            notifiedDriverId =>
+                notifiedDriverId.toString()
+                !== driverId.toString()
+        )
+        .map(
+            notifiedDriverId =>
+                notifiedDriverId.toString()
+        );
+
+    if (otherDriverIds.length > 0) {
+        await axios.post(
+            process.env.REMOVE_RIDE_NOTIFICATION_URL,
+            {
+           rideId:
+                    booking._id.toString(),
+                driverIds:
+                    otherDriverIds
+            }
+        );
+    }
     return booking;
 };
 
@@ -76,7 +102,6 @@ const removeDriverSocket = async (driverId, socketId) => {
         );
     }
 };
-
 
 module.exports ={
     updateLocation,

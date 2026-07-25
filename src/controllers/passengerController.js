@@ -27,6 +27,12 @@ const createBooking = async (req, res) => {
             nearbyDrivers.map(
                 driver => driver[0]
             );
+           
+        //since i have nearby drivers now I need them in booking object what all drivers were informed 
+        await bookingService.addNotifiedDrivers(
+            booking._id,
+            driverIds
+        );
 
 
         console.log(

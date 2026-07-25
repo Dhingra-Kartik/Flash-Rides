@@ -34,7 +34,24 @@ const confirmBooking = async (bookingId, driverId) => {
     return booking;
 };
 
+const addNotifiedDrivers = async (bookingId, driverIds) => {
+
+    const booking = await Booking.findByIdAndUpdate(
+        bookingId,
+        {
+            notifiedDrivers: driverIds
+        },
+        {
+            new: true
+        }
+    );
+
+    return booking;
+};
+
 module.exports = {
     createBooking,
     updateLocation,
-    confirmBooking};
+    confirmBooking,
+addNotifiedDrivers
+};
