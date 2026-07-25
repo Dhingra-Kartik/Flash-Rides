@@ -44,7 +44,7 @@ const login = async ({email, password}) => {   //same here since you have de-str
         },
         process.env.JWT_SECRET,
         {
-            expiresIn: '1d'
+            expiresIn: '7d'
         }
     );
 

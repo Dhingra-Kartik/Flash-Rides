@@ -35,7 +35,17 @@ const findNearbyDrivers = async(location, radius=5)=>{
 
 }
 
+const addNotifiedDrivers = async (bookingId, driverIds) => {
+
+    return await bookingService.addNotifiedDrivers(
+        bookingId,
+        driverIds
+    );
+};
+
 module.exports = {
     createBooking,
-    findNearbyDrivers
+    findNearbyDrivers,
+    addNotifiedDrivers
+
 }
