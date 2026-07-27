@@ -4,7 +4,7 @@ const bookingSchema = new mongoose.Schema({
 
     passenger: 
     {type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Ride-Matching-Users'},
+        ref: 'Ride-Matching-Users', required: true},
 
     driver: 
     {type: mongoose.Schema.Types.ObjectId, 
@@ -38,8 +38,12 @@ const bookingSchema = new mongoose.Schema({
     fare: Number,     //we will hardcode this fare for sec next we fare estimate later
 
     distance: Number,
-    status: {type: String, enum: ['pending', 'cancelled', 'confirmed', 'completed']}  //a booking has a status too that will be updated later
-})
+    status: {type: String, enum: ['pending', 'cancelled', 'confirmed', 'completed', 'driver_arriving', 'driver_arrived', 'in_progress'], default: "pending"}  //a booking has a status too that will be updated later
+    
+}, {
+    timestamps: true
+}
+);
 
 const Booking = mongoose.model('Ride-Matching-Bookings', bookingSchema);
 
