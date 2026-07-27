@@ -1,5 +1,5 @@
 const validTransitions = require('../utils/validTransitions');
-const Booking = require('../models/bookingModel');
+const Booking = require('../models/bookings');
 
 const transitionBookingStatus = async (
     bookingId,
