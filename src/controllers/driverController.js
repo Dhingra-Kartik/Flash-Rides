@@ -1,4 +1,5 @@
 const driverService = require('../services/driverService');
+const bookingService = require('../services/bookingService');
 
 const updateLocation = async(req, res) => {
     
@@ -84,9 +85,44 @@ const confirmBooking = async (req, res) => {
 
 };
 
+const updateBookingStatus = async (req, res) => {
+
+    try {
+        const { bookingId, newStatus } = req.body;
+        if (!bookingId || !newStatus) {
+            return res.status(400).json({
+                success: false,
+                message: 'Booking ID and new status are required'
+            });
+
+        }
+const booking =
+    await bookingService.transitionBookingStatus(
+        bookingId,
+        req.user.id,
+        newStatus
+    );
+
+    return res.status(200).json({
+        success: true,
+        message: `Booking status updated to ${newStatus}`,
+        data: booking
+    });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
 
 
 module.exports = {
     updateLocation,
-    confirmBooking
+    confirmBooking,
+    updateBookingStatus
+
 }
