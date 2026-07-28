@@ -3,7 +3,8 @@ const authMiddleware = require('../../middlewares/authMiddleware');
 const authorizeRoles = require('../../middlewares/roleMiddleware');
 const {
     updateLocation,
-    confirmBooking
+    confirmBooking,
+    updateBookingStatus
 } = require('../../controllers/driverController');
 
 const bookingsRouter = express.Router();
@@ -14,4 +15,10 @@ bookingsRouter.post('/confirm',
     authorizeRoles('driver'),  
     confirmBooking);
 
+bookingsRouter.patch(
+    '/status',
+    authMiddleware,
+    authorizeRoles('driver'),
+    updateBookingStatus
+);
 module.exports = bookingsRouter;
