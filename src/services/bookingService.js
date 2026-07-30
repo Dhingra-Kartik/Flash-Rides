@@ -38,6 +38,14 @@ const transitionBookingStatus = async (
     booking.status = newStatus;
 
     await booking.save();
+    await axios.post(
+        process.env.NOTIFY_PASSENGER_STATUS_URL,
+        {
+            passengerId: booking.passenger,
+            bookingId: booking._id,
+            status: booking.status
+        }
+    )
 
     return booking;
 }
