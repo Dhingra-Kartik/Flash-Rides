@@ -1,5 +1,6 @@
 const validTransitions = require('../utils/validTransitions');
 const Booking = require('../models/bookings');
+const axios = require('axios');
 
 const transitionBookingStatus = async (
     bookingId,
@@ -50,6 +51,13 @@ const transitionBookingStatus = async (
     return booking;
 }
 
+const getDriverBookings = async (driverId) => {
+    return await Booking.find({ driver: driverId })
+        .populate("passenger", "name email")
+        .sort({ createdAt: -1 });
+};
+
 module.exports = {
-    transitionBookingStatus
+    transitionBookingStatus,
+    getDriverBookings
 };
