@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../../middlewares/authMiddleware');
 const authorizeRoles = require('../../middlewares/roleMiddleware');
-const {updateLocation} = require('../../controllers/driverController');
+const {updateLocation, getDriverBookings} = require('../../controllers/driverController');
 
 const driverRouter = express.Router();
 

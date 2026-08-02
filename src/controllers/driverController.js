@@ -117,12 +117,40 @@ const booking =
     }
 };
 
+const getDriverBookings = async(req, res) =>{
 
+    try{
+        const driverId = req.user.id;
+        if(!driverId){
+            return res.status(400).json({
+                success: false,
+                message: "Enter valid driverId"
+            })
+        }
+
+        const driverBookings = await bookingService.getDriverBookings(driverId);
+        console.log(driverBookings);
+
+    return res.status(200).json({
+    success: true,
+    message: "Driver bookings fetched successfully",
+    data: driverBookings
+}); 
+    } catch (err){
+        console.error(err);
+
+    return res.status(500).json({
+        success: false,
+        message: err.message
+    });
+    }
+};
 
 
 module.exports = {
     updateLocation,
     confirmBooking,
-    updateBookingStatus
+    updateBookingStatus,
+    getDriverBookings
 
 }

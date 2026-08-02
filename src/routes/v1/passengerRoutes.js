@@ -1,6 +1,7 @@
 const express = require('express');
 const {
-    createBooking, 
+    createBooking,
+    getPassengerBookings 
     } = require('../../controllers/passengerController');
 const authMiddleware = require('../../middlewares/authMiddleware');
 const authorizeRoles = require('../../middlewares/roleMiddleware');
@@ -12,9 +13,9 @@ passengerRouter.post('/ride',
     authorizeRoles('passenger'), 
     createBooking);
 
-// passengerRouter.get('/bookings',
-//     authMiddleware, 
-//     authorizeRoles('passenger'),
-//     getPassengerBookings);
+passengerRouter.get('/bookings',
+    authMiddleware, 
+    authorizeRoles('passenger'),
+    getPassengerBookings);
 
 module.exports = passengerRouter;
