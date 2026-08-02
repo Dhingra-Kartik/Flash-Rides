@@ -1,4 +1,4 @@
-const bookingService = require('../repositories/passengerRepository');
+const bookingRepository = require('../repositories/passengerRepository');
 const {haversineDistance} = require('../utils/haversineDistance');
 const { redisClient } = require('../utils/redisClient');
 const locationService = require('./locationUpdate'); 
@@ -20,7 +20,7 @@ const createBooking = async ({passengerId, source, destination}) =>{
         status: 'pending'
     }
 
-    const booking = await bookingService.createBooking(bookingData);
+    const booking = await bookingRepository.createBooking(bookingData);
     return booking;
 }
 
@@ -37,15 +37,21 @@ const findNearbyDrivers = async(location, radius=5)=>{
 
 const addNotifiedDrivers = async (bookingId, driverIds) => {
 
-    return await bookingService.addNotifiedDrivers(
+    return await bookingRepository.addNotifiedDrivers(
         bookingId,
         driverIds
+    );
+};
+
+const getPassengerBookings = async(passengerId) =>{
+    return await bookingRepository.getPassengerBookings(
+        passengerId
     );
 };
 
 module.exports = {
     createBooking,
     findNearbyDrivers,
-    addNotifiedDrivers
-
+    addNotifiedDrivers,
+    getPassengerBookings
 }

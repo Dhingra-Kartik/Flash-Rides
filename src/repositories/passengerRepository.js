@@ -49,9 +49,21 @@ const addNotifiedDrivers = async (bookingId, driverIds) => {
     return booking;
 };
 
+const getPassengerBookings = async(passengerId, page=1, limitNo=3) =>{
+    const bookings = await Booking.find({passenger: passengerId}, {notifiedDrivers: 0})
+    .populate('driver', 'name')
+    .populate('passenger', 'name')
+    .sort({createdAt: -1})
+    .skip((page-1)*limitNo)
+    .limit(limitNo);
+
+    return bookings;
+}
+
 module.exports = {
     createBooking,
     updateLocation,
     confirmBooking,
-addNotifiedDrivers
+addNotifiedDrivers,
+getPassengerBookings
 };

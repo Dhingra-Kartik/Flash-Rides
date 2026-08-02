@@ -77,8 +77,34 @@ driverIds
                 message: error.message
             });
         }
-    }
+}
 
+const getPassengerBookings = async(req, res) => {
+    try{
+    const passengerId = req.user.id;
+        if(!passengerId){
+            return res.status(400).json({
+                success: false,
+            message: "Enter valid passengerId"
+            })
+        }
+
+        const bookings = await bookingService.getPassengerBookings(passengerId);
+
+        return res.status(200).json({
+            success: true,
+            message: "Successfully fetched top 3 bookings",
+            data: bookings
+        })
+    } catch (err){
+        console.log(err);
+        return res.status(400).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
 module.exports = {
-        createBooking
+        createBooking,
+        getPassengerBookings
     }
