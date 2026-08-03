@@ -67,7 +67,12 @@ const confirmBooking = async (
     return booking;
 };
 
+const getDashboard = async (driverId)=>{
+    return await passengerRepository.getDashboard(driverId);
+};
+
 module.exports ={
     updateLocation,
-    confirmBooking
+    confirmBooking,
+    getDashboard
 }

@@ -1,5 +1,6 @@
 const Booking = require("../models/bookings");
 const User = require('../models/userModel');
+const mongoose = require('mongoose');
 
 const createBooking = async(bookingData) =>{
 
@@ -60,10 +61,48 @@ const getPassengerBookings = async(passengerId, page=1, limitNo=3) =>{
     return bookings;
 }
 
+const getDashboard = async(driverId) =>{
+    const stats = await Booking.aggregate([  
+        //first query
+        {
+            $match: {
+            driver: new mongoose.Types.ObjectId(driverId),
+            status: "completed"
+        }
+        },
+        //another query
+        {
+            $group:{
+                _id: null,
+
+                totalEarnings: {
+                    $sum: "$fare"
+                },
+
+                completedTrips: {
+                    $sum: 1
+                },
+
+                averageFare: {
+                    $avg: "$fare"
+                }
+            }
+
+        }
+    ]);
+
+    return stats[0] || {
+        totalEarnings: 0,
+        completedTrips: 0,
+        averageFare: 0
+    };
+}
+    
 module.exports = {
     createBooking,
     updateLocation,
     confirmBooking,
-addNotifiedDrivers,
-getPassengerBookings
+    addNotifiedDrivers,
+    getPassengerBookings,
+    getDashboard
 };
