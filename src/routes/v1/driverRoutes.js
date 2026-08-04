@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../../middlewares/authMiddleware');
 const authorizeRoles = require('../../middlewares/roleMiddleware');
-const {updateLocation, getDriverBookings} = require('../../controllers/driverController');
+const {updateLocation, getDriverBookings, getDashboard} = require('../../controllers/driverController');
 
 const driverRouter = express.Router();
 
@@ -13,5 +13,11 @@ driverRouter.post('/location',
     authMiddleware,
     authorizeRoles('driver'), 
     updateLocation);
+
+driverRouter.get('/dashboard', 
+    authMiddleware,
+    authorizeRoles('driver'),
+    getDashboard
+);
 
 module.exports = driverRouter;

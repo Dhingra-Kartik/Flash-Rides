@@ -146,11 +146,30 @@ const getDriverBookings = async(req, res) =>{
     }
 };
 
+const getDashboard = async(req, res) =>{
+    try{
+    const driverId = req.user.id;
 
+    const dashboard = await driverService.getDashboard(driverId);
+
+    return res.status(200).json({
+        success: true,
+        data: dashboard
+        });
+
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+}
 module.exports = {
     updateLocation,
     confirmBooking,
     updateBookingStatus,
-    getDriverBookings
+    getDriverBookings,
+    getDashboard
 
 }
