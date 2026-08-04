@@ -61,7 +61,7 @@ const getPassengerBookings = async(passengerId, page=1, limitNo=3) =>{
     return bookings;
 }
 
-const getDashboard = async(driverId) =>{
+const overallStatistics = async(driverId) =>{
     const stats = await Booking.aggregate([  
         //first query
         {
@@ -95,7 +95,6 @@ const getDashboard = async(driverId) =>{
                     $min: "$fare"
                 }
             }
-
         }
     ]);
 
@@ -134,21 +133,41 @@ const todayStatus = async(driverId) =>{
                     $sum: "$fare"
                 },
 
-                completedTrips: {
+                todayTrips: {
                     $sum: 1
                 }
             }
         }
-        ]);
-    } catch(err) {
-        console.log(err);
-    }
+    ]);
 
     return todayStats[0] || {
         todayEarnings: 0,
         todayTrips: 0
+    };
+    } catch(err) {
+        console.log(err);
     }
+}
 
+const getDashboard = async(driverId)=>{
+    const [
+    overall,
+    today
+    // week,
+    // month
+] = await Promise.all([  //promise.all orders pizza, burger, chilly potato, pasta all at once rather visiting shops one by one
+    overallStatistics(driverId),
+    todayStatus(driverId)
+    // weekStats(driverId),
+    // monthStats(driverId)
+]);
+
+return {
+    ...overall,
+    ...today
+    // ...week,
+    // ...month
+};
 }
     
 module.exports = {
