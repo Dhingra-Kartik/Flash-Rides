@@ -165,11 +165,23 @@ const getDashboard = async(req, res) =>{
         });
     }
 }
+
+const getEarningsTrend = async(req, res) =>{
+    const driverId = req.user.id;
+    const EarningTrend = await driverService.getEarningsTrend(driverId);
+
+    return res.status(200).json({
+        success: true,
+        message: "Successfully fetched the trend line",
+        data: EarningTrend
+    })
+}
 module.exports = {
     updateLocation,
     confirmBooking,
     updateBookingStatus,
     getDriverBookings,
-    getDashboard
+    getDashboard,
+    getEarningsTrend
 
 }

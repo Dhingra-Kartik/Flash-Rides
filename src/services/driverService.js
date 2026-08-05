@@ -2,6 +2,7 @@
 const {redisClient} = require('../utils/redisClient');
 const locationService = require('./locationUpdate'); 
 const passengerRepository = require('../repositories/passengerRepository');
+const dashboardRepository = require('../repositories/dashboardRepository');
 const axios = require('axios');
 
 const updateLocation = async(driverId, {latitude, longitude}) => {
@@ -68,11 +69,17 @@ const confirmBooking = async (
 };
 
 const getDashboard = async (driverId)=>{
-    return await passengerRepository.getDashboard(driverId);
+    return await dashboardRepository.getDashboard(driverId);
 };
+const getEarningsTrend = async (driverId)=>{
+    return await dashboardRepository.getEarningsTrend(driverId);
+};
+
+
 
 module.exports ={
     updateLocation,
     confirmBooking,
-    getDashboard
+    getDashboard,
+    getEarningsTrend
 }
