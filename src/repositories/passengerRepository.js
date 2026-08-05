@@ -149,24 +149,105 @@ const todayStatus = async(driverId) =>{
     }
 }
 
+const getWeekStats = async(driverId) => {
+    const startOfWeek = new Date();
+    const day = startOfWeek.getDay(); //getDay returns 0 to 6 for sunday to saturday
+    //whatever the day is today we want to go back to monday
+    const diff = day === 0 ? -6 : 1 - day;  //if sunday go 6 days back to monday
+    // otherwise whatever day we have subtract it from 1 it to get number days to go back to get monday
+    //now we have number of days to go back to. let us go back now
+    startOfWeek.setDate(startOfWeek.getDate() + diff); //it sets the start to monday of the week
+    startOfWeek.setHours(0, 0, 0, 0); //setup day hours to ZERO 00H, 00M, 00S, 00MS
+
+        const weeklyStats = await Booking.aggregate([
+            //first query
+        {
+            $match: {
+            driver: new mongoose.Types.ObjectId(driverId),
+            status: "completed",
+            createdAt: {
+                $gte: startOfWeek
+            }
+        }
+        },
+        //another query
+        {
+            $group:{
+                _id: null,
+
+                weeklyEarnings: {
+                    $sum: "$fare"
+                },
+
+                weeklyTrips: {
+                    $sum: 1
+                }
+            }
+        }
+    ]);
+
+    return weeklyStats[0] || {
+        weeklyEarnings: 0,
+        weeklyTrips: 0
+    };
+}
+const getMonthStats = async(driverId) => {
+    const startOfMonth  = new Date();
+   
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+        const monthlyStats = await Booking.aggregate([
+            //first query
+        {
+            $match: {
+            driver: new mongoose.Types.ObjectId(driverId),
+            status: "completed",
+            createdAt: {
+                $gte: startOfMonth
+            }
+        }
+        },
+        //another query
+        {
+            $group:{
+                _id: null,
+
+                monthlyEarnings: {
+                    $sum: "$fare"
+                },
+
+                monthlyTrips: {
+                    $sum: 1
+                }
+            }
+        }
+    ]);
+
+    return monthlyStats[0] || {
+        monthlyEarnings: 0,
+        monthlyTrips: 0
+    };
+}
+
 const getDashboard = async(driverId)=>{
     const [
     overall,
-    today
-    // week,
-    // month
+    today,
+    week,
+    month
 ] = await Promise.all([  //promise.all orders pizza, burger, chilly potato, pasta all at once rather visiting shops one by one
     overallStatistics(driverId),
-    todayStatus(driverId)
-    // weekStats(driverId),
-    // monthStats(driverId)
+    todayStatus(driverId),
+    getWeekStats(driverId),
+    getMonthStats(driverId)
 ]);
 
 return {
     ...overall,
-    ...today
-    // ...week,
-    // ...month
+    ...today,
+    ...week,
+    ...month
 };
 }
     
