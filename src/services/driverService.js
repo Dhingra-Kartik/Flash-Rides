@@ -75,11 +75,16 @@ const getEarningsTrend = async (driverId)=>{
     return await dashboardRepository.getEarningsTrend(driverId);
 };
 
+const getPerformance = async(driverId)=>{
+    return await dashboardRepository.getPerformance(driverId);
+}
+
 
 
 module.exports ={
     updateLocation,
     confirmBooking,
     getDashboard,
-    getEarningsTrend
+    getEarningsTrend,
+    getPerformance
 }

@@ -1,7 +1,7 @@
 const express = require('express');
 const authMiddleware = require('../../middlewares/authMiddleware');
 const authorizeRoles = require('../../middlewares/roleMiddleware');
-const {updateLocation, getDriverBookings, getDashboard, getEarningsTrend} = require('../../controllers/driverController');
+const {updateLocation, getDriverBookings, getDashboard, getEarningsTrend, getPerformance} = require('../../controllers/driverController');
 
 const driverRouter = express.Router();
 
@@ -23,6 +23,11 @@ driverRouter.get('/dashboard/trend',
     authMiddleware,
     authorizeRoles('driver'),
     getEarningsTrend
+);
+driverRouter.get('/dashboard/performance', 
+    authMiddleware,
+    authorizeRoles('driver'),
+    getPerformance
 );
 
 module.exports = driverRouter;

@@ -240,8 +240,99 @@ return {
     ...month
 };
 }
+
+const getAcceptanceRate = async(driverId)=>{
+    const [
+    notifiedCount,
+    acceptedCount
+] = await Promise.all([
+    Booking.countDocuments({
+        notifiedDrivers: driverId
+    }),
+
+    Booking.countDocuments({
+        driver: driverId
+    })
+]);
+
+    const acceptanceRate = notifiedCount === 0 ? 0: (acceptedCount / notifiedCount) * 100;
+    return {
+        acceptanceRate
+    }
+};
+
+const getCancellationRate = async(driverId)=>{
+    const [
+        cancelledRides,
+        assignedRides
+    ] = await Promise.all([
+        Booking.countDocuments({
+            driver: driverId,
+            status: "cancelled"
+        }),
+
+        Booking.countDocuments({
+            driver: driverId
+        })
+    ]);
+
+    const cancellationRate = assignedRides === 0? 0: (cancelledRides/assignedRides) * 100;
+
+    return {
+        cancellationRate
+    }
+};
+
+const getDistanceRate = async(driverId)=>{
+    const distanceRate = await Booking.aggregate([
+        {
+            $match: { 
+                driver: new mongoose.Types.ObjectId(driverId),
+                status: "completed",
+            }
+        },
+        {
+        $group: {
+            _id: driverId,
+
+            averageDistance: {
+                $avg: "$distance"
+            },
+
+            longestRide: {
+                $max: "$distance"
+            },
+
+            shortestRide: {
+            $min: "$distance"
+            }
+        }}
+    ])
+
+    return {
+        distanceRate
+    }
+}
+
+const getPerformance = async(driverId)=>{
+    const [
+        acceptance,
+        distanceStats,
+        cancellation
+    ] = await Promise.all([
+        getAcceptanceRate(driverId),
+        getDistanceRate(driverId),
+        getCancellationRate(driverId)
+    ])
+    return {
+        ...acceptance,
+        ...distanceStats,
+        ...cancellation
+    }
+}
     
 module.exports = {
     getDashboard,
-    getEarningsTrend
+    getEarningsTrend,
+    getPerformance
 };
