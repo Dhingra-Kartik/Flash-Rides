@@ -165,11 +165,42 @@ const getDashboard = async(req, res) =>{
         });
     }
 }
+
+const getEarningsTrend = async(req, res) =>{
+    const driverId = req.user.id;
+    const EarningTrend = await driverService.getEarningsTrend(driverId);
+
+    return res.status(200).json({
+        success: true,
+        message: "Successfully fetched the trend line",
+        data: EarningTrend
+    })
+}
+
+const getPerformance = async(req, res)=>{
+    const driverId = req.user.id;
+    if(!driverId){
+        res.status(400).json({
+            success: false,
+            message: "Enter valid DriverId"
+        })
+    }
+
+    const performance = await driverService.getPerformance(driverId);
+
+    return res.status(200).json({
+        success: true,
+        message: "Successfully fetched the performance metrics",
+        data: performance
+    })
+}
 module.exports = {
     updateLocation,
     confirmBooking,
     updateBookingStatus,
     getDriverBookings,
-    getDashboard
+    getDashboard,
+    getEarningsTrend,
+    getPerformance
 
 }
