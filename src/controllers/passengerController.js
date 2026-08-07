@@ -51,7 +51,7 @@ driverIds
     driverIds
 });
 
-            await axios.post(`${process.env.SOCKET_SERVICE}`,
+            await axios.post(`${process.env.SOCKET_SERVICE_DRIVER}`,
 
                 {rideId: booking._id.toString(),
 

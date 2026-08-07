@@ -1,5 +1,6 @@
 const driverService = require('../services/driverService');
 const bookingService = require('../services/bookingService');
+const axios = require('axios');
 
 const updateLocation = async(req, res) => {
     
@@ -102,6 +103,20 @@ const booking =
         req.user.id,
         newStatus
     );
+
+    await axios.post(`${process.env.SOCKET_SERVICE_PASSENGER}`, 
+        {passengerId: booking.passenger,
+            rideId: booking._id,
+            status: booking.status // or newStatus
+
+                // rideInfo: {
+                //     source: booking.source,
+                //     destination: booking.destination,
+                //     estimatedFare: booking.fare,
+                //     driver: booking.driver
+                // },
+        }
+    )
 
     return res.status(200).json({
         success: true,
