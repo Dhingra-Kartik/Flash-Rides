@@ -10,31 +10,6 @@ const createBooking = async(bookingData) =>{
 
 }
 
-const updateLocation = async(driverId, location) =>{
-    const updatedLocation = await User.findByIdAndUpdate(driverId, {location}, {
-        new: true
-    })
-}
-
-const confirmBooking = async (bookingId, driverId) => {
-
-    const booking = await Booking.findOneAndUpdate(
-        {
-            _id: bookingId,
-            status: 'pending'
-        },
-        {
-            driver: driverId,
-            status: 'confirmed'
-        },
-        {
-            new: true
-        }
-    );
-
-    return booking;
-};
-
 const addNotifiedDrivers = async (bookingId, driverIds) => {
 
     const booking = await Booking.findByIdAndUpdate(
@@ -63,8 +38,6 @@ const getPassengerBookings = async(passengerId, page=1, limitNo=3) =>{
     
 module.exports = {
     createBooking,
-    updateLocation,
-    confirmBooking,
     addNotifiedDrivers,
     getPassengerBookings
 };

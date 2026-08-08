@@ -3,6 +3,7 @@ const {redisClient} = require('../utils/redisClient');
 const locationService = require('./locationUpdate'); 
 const passengerRepository = require('../repositories/passengerRepository');
 const dashboardRepository = require('../repositories/dashboardRepository');
+const driverRepository = require('../repositories/driverRepository');
 const axios = require('axios');
 
 const updateLocation = async(driverId, {latitude, longitude}) => {
@@ -15,10 +16,28 @@ const updateLocation = async(driverId, {latitude, longitude}) => {
         //update driver location to REDIS DB
         const res = await locationService.addDriverLocation(driverId, lon, lat);
         //u can also update the same in mongoDB too
-        await passengerRepository.updateLocation(driverId, {
+        await driverRepository.updateLocation(driverId, {
             type: 'Point',
             coordinates: [lon, lat]
         })
+
+    //now driver updated the location is the driver currently on ACTIVE RIDE?
+    const booking = await driverRepository.findActiveBooking(driverId);
+    if(!booking){
+        return;
+    }
+    //once we get active booking, lets tell socket service location of driverId
+    await axios.post(
+        process.env.SOCKET_SERVICE_PASSENGER_LOCATION, {
+            passengerId: booking.passenger,
+            bookingId: booking._id,
+            driverLocation: {
+                latitude: lat,
+                longitude: lon
+            }
+        }
+    );
+
     } catch (error) {
         console.log(error);
         throw error;
@@ -31,7 +50,7 @@ const confirmBooking = async (
 ) => {
 
     const booking =
-        await passengerRepository.confirmBooking(
+        await driverRepository.confirmBooking(
             bookingId,
             driverId
         );
