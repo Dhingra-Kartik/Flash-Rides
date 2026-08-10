@@ -61,6 +61,11 @@ const confirmBooking = async (
         );
     }
 
+    await axios.post(process.env.SOCKET_SERVICE_DRIVER_AVAILABILITY, {
+        driverId,
+        status: "on_trip"
+    })
+
     const otherDriverIds =
     booking.notifiedDrivers
         .filter(
