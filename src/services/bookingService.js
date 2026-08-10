@@ -47,7 +47,12 @@ const transitionBookingStatus = async (
             status: booking.status
         }
     )
-
+    if(newStatus == "completed"){
+    await axios.post(process.env.SOCKET_SERVICE_DRIVER_AVAILABILITY, {
+        driverId: booking.driver,
+        status: "available"
+    })
+    }
     return booking;
 }
 
