@@ -37,6 +37,18 @@ const bookingSchema = new mongoose.Schema({
 
     fare: Number,     //we will hardcode this fare for sec next we fare estimate later
 
+    estimatedDistance: Number,
+    estimatedFare: Number,
+    actualDistance: {
+        type: Number,
+        default: 0
+    },
+
+    finalFare: {
+        type: Number,
+        default: 0
+    },
+
     distance: Number,
     status: {type: String, enum: ['pending', 'cancelled', 'confirmed', 'completed', 'driver_arriving', 'driver_arrived', 'in_progress'], default: "pending"}  //a booking has a status too that will be updated later
     
