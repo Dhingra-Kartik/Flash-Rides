@@ -23,7 +23,7 @@ class locationService {
     }
 
     async findNearbyDrivers(lon, lat, rad){
-
+        //found nearby drivers first
         const nearbyDrivers = await redisClient.sendCommand([
             'GEORADIUS',
             'drivers',
@@ -33,8 +33,24 @@ class locationService {
             'km',
             'WITHCOORD'
         ]);
+        console.log(nearbyDrivers);
 
-        return nearbyDrivers;
+        const availableDrivers = [];  //are teh nearby drivers we found available to take ride?
+
+        for(const driver of nearbyDrivers){
+            const driverId = driver[0];
+            const status = await redisClient.hGet(
+            'driver_availability',
+            driverId
+            );
+            console.log(status);
+
+            if(status == "available"){
+                availableDrivers.push(driver);
+            }
+
+        }
+        return availableDrivers;
     }
 
 }
