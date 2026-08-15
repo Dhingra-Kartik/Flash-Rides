@@ -6,10 +6,7 @@ const findActiveBooking = async(driverId)=>{
     driver: driverId,
     status: {
         $in: [
-            "confirmed",
-            "driver_arriving",
-            "driver_arrived",
-            "ride_started"
+            "in_progress"
         ]
     }
 });
