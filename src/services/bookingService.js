@@ -1,6 +1,7 @@
 const validTransitions = require('../utils/validTransitions');
 const Booking = require('../models/bookings');
 const axios = require('axios');
+const tripService = require('./tripService');
 
 const transitionBookingStatus = async (
     bookingId,
@@ -47,6 +48,13 @@ const transitionBookingStatus = async (
             status: booking.status
         }
     )
+    if(newStatus == "in_progress"){
+        await tripService.initializeTrip(
+            booking._id,
+            booking.source.latitude,  //driver would ofcourse start from source lat & long
+            booking.source.longitude
+        )
+    }
     if(newStatus == "completed"){
     await axios.post(process.env.SOCKET_SERVICE_DRIVER_AVAILABILITY, {
         driverId: booking.driver,

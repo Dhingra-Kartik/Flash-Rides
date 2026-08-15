@@ -108,13 +108,6 @@ const booking =
         {passengerId: booking.passenger,
             rideId: booking._id,
             status: booking.status // or newStatus
-
-                // rideInfo: {
-                //     source: booking.source,
-                //     destination: booking.destination,
-                //     estimatedFare: booking.fare,
-                //     driver: booking.driver
-                // },
         }
     )
 
