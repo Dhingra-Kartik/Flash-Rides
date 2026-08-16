@@ -4,7 +4,9 @@ const locationService = require('./locationUpdate');
 const passengerRepository = require('../repositories/passengerRepository');
 const dashboardRepository = require('../repositories/dashboardRepository');
 const driverRepository = require('../repositories/driverRepository');
+const tripService = require('../services/tripService');
 const axios = require('axios');
+const {haversineDistance} = require('../utils/haversineDistance');
 
 const updateLocation = async(driverId, {latitude, longitude}) => {
 
@@ -23,6 +25,7 @@ const updateLocation = async(driverId, {latitude, longitude}) => {
 
     //now driver updated the location is the driver currently on ACTIVE RIDE?
     const booking = await driverRepository.findActiveBooking(driverId);
+    console.log("ACTIVE BOOKING FROM LOCATION:", booking);
     if(!booking){
         return;
     }
@@ -37,6 +40,48 @@ const updateLocation = async(driverId, {latitude, longitude}) => {
             }
         }
     );
+
+    if(booking.status == "in_progress"){
+        console.log("ENTERED TRIP DISTANCE CALCULATION:", booking._id.toString());
+
+        const previousLocation = await tripService.getLastLocation(
+            booking._id
+        )
+
+        console.log("PREVIOUS LOCATION:", previousLocation );
+
+        if(!previousLocation){
+            console.log("NO PREVIOUS LOCATION, INITIALIZe AGAIN" );
+            await tripService.initializeTrip(
+                booking._id,
+                latitude,
+                longitude
+            )
+            return;
+        }
+
+        console.log('INPUTS');
+console.log("previous latitude:", previousLocation.latitude);
+console.log("previous longitude:", previousLocation.longitude);
+console.log("current latitude:", latitude);
+console.log("current longitude:", longitude);
+        const segmentDistance = haversineDistance(
+            previousLocation.latitude,
+            previousLocation.longitude,
+            latitude,
+            longitude
+        );
+
+        console.log("SEGMENT :", segmentDistance);
+
+        await tripService.updateTripLocation(
+            booking._id,
+            latitude,
+            longitude,
+            segmentDistance
+        );
+    
+    }
 
     } catch (error) {
         console.log(error);

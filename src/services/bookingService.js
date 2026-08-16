@@ -2,6 +2,8 @@ const validTransitions = require('../utils/validTransitions');
 const Booking = require('../models/bookings');
 const axios = require('axios');
 const tripService = require('./tripService');
+const BASE_FARE = 30;
+const KM_FARE = 12;
 
 const transitionBookingStatus = async (
     bookingId,
@@ -49,6 +51,7 @@ const transitionBookingStatus = async (
         }
     )
     if(newStatus == "in_progress"){
+        console.log("INTO THE INITIALIZING FROM BOOKINGSERVICE")
         await tripService.initializeTrip(
             booking._id,
             booking.source.latitude,  //driver would ofcourse start from source lat & long
@@ -56,10 +59,18 @@ const transitionBookingStatus = async (
         )
     }
     if(newStatus == "completed"){
+        const actualDistance = await tripService.getTripDistance(bookingId);
+        const finalFare = BASE_FARE + (actualDistance * KM_FARE);
+        booking.actualDistance = actualDistance;
+        booking.finalFare = finalFare;
+        booking.fare = finalFare;
+        await booking.save();
+
     await axios.post(process.env.SOCKET_SERVICE_DRIVER_AVAILABILITY, {
         driverId: booking.driver,
         status: "available"
     })
+    await tripService.clearTrip(bookingId);
     }
     return booking;
 }
